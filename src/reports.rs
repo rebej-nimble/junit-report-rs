@@ -87,15 +87,7 @@ impl Report {
                                         })
                                         .map(drop)
                                 },
-                            )?
-                            .write_iter(ts.properties.iter(), |w, prop| {
-                                w.create_element("property")
-                                    .with_attributes([
-                                        ("name", prop.name.as_str()),
-                                        ("value", prop.value.as_str()),
-                                    ])
-                                    .write_empty()
-                            })
+                            )
                     })
                     .map(drop)
                 },
@@ -124,7 +116,6 @@ impl TestCase {
                     matches!(self.result, TestResult::Success)
                         && self.system_out.is_none()
                         && self.system_err.is_none()
-                        && self.properties.is_empty()
                 },
                 |w| {
                     match self.result {
@@ -177,14 +168,6 @@ impl TestCase {
                             ),
                         TestResult::Skipped => w.create_element("skipped").write_empty(),
                     }?
-                    .write_iter(self.properties.iter(), |w, prop| {
-                        w.create_element("property")
-                            .with_attributes([
-                                ("name", prop.name.as_str()),
-                                ("value", prop.value.as_str()),
-                            ])
-                            .write_empty()
-                    })?
                     .write_opt(self.system_out.as_ref(), |w, out| {
                         w.create_element("system-out")
                             .write_cdata_content(BytesCData::new(out.as_str()))
