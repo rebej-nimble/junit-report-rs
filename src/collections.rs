@@ -18,7 +18,6 @@ pub struct TestSuite {
     pub testcases: Vec<TestCase>,
     pub system_out: Option<String>,
     pub system_err: Option<String>,
-    pub properties: Vec<Property>,
 }
 
 impl TestSuite {
@@ -32,7 +31,6 @@ impl TestSuite {
             testcases: Vec::new(),
             system_out: None,
             system_err: None,
-            properties: Vec::new(),
         }
     }
 
@@ -82,16 +80,6 @@ impl TestSuite {
             .iter()
             .fold(Duration::ZERO, |sum, d| sum + d.time)
     }
-
-    /// Add a [`Property`](struct.Property.html) to the `TestSuite`.
-    pub fn add_property(&mut self, property: Property) {
-        self.properties.push(property);
-    }
-
-    /// Add several [`Property`](struct.Property.html) from a Vec.
-    pub fn add_properties(&mut self, properties: impl IntoIterator<Item = Property>) {
-        self.properties.extend(properties);
-    }
 }
 
 ///  Builder for [`TestSuite`](struct.TestSuite.html) objects.
@@ -135,18 +123,6 @@ impl TestSuiteBuilder {
 
     pub fn set_system_err(&mut self, system_err: &str) -> &mut Self {
         self.testsuite.system_err = Some(system_err.to_owned());
-        self
-    }
-
-    /// Add a [`Property`](struct.Property.html) to the `TestSuite`.
-    pub fn add_property(&mut self, property: Property) -> &mut Self {
-        self.testsuite.properties.push(property);
-        self
-    }
-
-    /// Add several [`Property`](struct.Property.html) from a Vec.
-    pub fn add_properties(&mut self, properties: impl IntoIterator<Item = Property>) -> &mut Self {
-        self.testsuite.properties.extend(properties);
         self
     }
 

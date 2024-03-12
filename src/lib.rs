@@ -54,7 +54,7 @@ pub use quick_xml::Error;
 pub use time::{macros::datetime, Duration, OffsetDateTime};
 
 pub use crate::{
-    collections::{TestCase, TestCaseBuilder, TestResult, TestSuite, TestSuiteBuilder},
+    collections::{Property, TestCase, TestCaseBuilder, TestResult, TestSuite, TestSuiteBuilder},
     reports::{Report, ReportBuilder},
 };
 

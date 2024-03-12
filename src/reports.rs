@@ -87,15 +87,7 @@ impl Report {
                                         })
                                         .map(drop)
                                 },
-                            )?
-                            .write_iter(ts.properties.iter(), |w, prop| {
-                                w.create_element("property")
-                                    .with_attributes([
-                                        ("name", prop.name.as_str()),
-                                        ("value", prop.value.as_str()),
-                                    ])
-                                    .write_empty()
-                            })
+                            )
                     })
                     .map(drop)
                 },
@@ -177,14 +169,6 @@ impl TestCase {
                             ),
                         TestResult::Skipped => w.create_element("skipped").write_empty(),
                     }?
-                    .write_iter(self.properties.iter(), |w, prop| {
-                        w.create_element("property")
-                            .with_attributes([
-                                ("name", prop.name.as_str()),
-                                ("value", prop.value.as_str()),
-                            ])
-                            .write_empty()
-                    })?
                     .write_opt(self.system_out.as_ref(), |w, out| {
                         w.create_element("system-out")
                             .write_cdata_content(BytesCData::new(out.as_str()))
@@ -192,7 +176,24 @@ impl TestCase {
                     .write_opt(self.system_err.as_ref(), |w, err| {
                         w.create_element("system-err")
                             .write_cdata_content(BytesCData::new(err.as_str()))
-                    })
+                    })?
+                    .create_element("properties")
+                    .write_empty_or_inner(
+                        |_| {
+                            self.properties.is_empty()
+                        },
+                        |w| {
+                            w.write_iter(self.properties.iter(), |w, prop| {
+                                w.create_element("property")
+                                .with_attributes([
+                                    ("name", prop.name.as_str()),
+                                    ("value", prop.value.as_str()),
+                                ])
+                                .write_empty()
+                            })
+                            .map(drop)
+                        },
+                    )
                     .map(drop)
                 },
             )
